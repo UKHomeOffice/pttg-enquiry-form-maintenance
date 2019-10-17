@@ -1,0 +1,67 @@
+pipeline:
+
+  docker-build:
+    image: docker:18.03.1-ce
+    environment:
+    - DOCKER_HOST=tcp://172.17.0.1:2375
+    commands:
+    - docker build -t pttg-enquiry-form-maintenance .
+    when:
+      event: [push, pull_request, tag]
+
+  install-docker-image-with-githash-tag:
+    image: docker:18.03.1-ce
+    environment:
+    - DOCKER_HOST=tcp://172.17.0.1:2375
+    secrets:
+    - docker_password
+    commands:
+    - docker login -u="ukhomeofficedigital+pttg_enquiry_form_maintenance" -p=$${DOCKER_PASSWORD} quay.io
+    - docker tag pttg-enquiry-form-maintenance quay.io/ukhomeofficedigital/pttg-enquiry-form-maintenance:${DRONE_COMMIT_SHA:0:8}
+    - docker push quay.io/ukhomeofficedigital/pttg-enquiry-form-maintenance:${DRONE_COMMIT_SHA:0:8}
+    when:
+      event: push
+
+  install-docker-image-from-feature-branch-build:
+    image: docker:18.03.1-ce
+    environment:
+    - DOCKER_HOST=tcp://172.17.0.1:2375
+    secrets:
+    - docker_password
+    commands:
+    - docker login -u="ukhomeofficedigital+pttg_enquiry_form_maintenance" -p=$${DOCKER_PASSWORD} quay.io
+    - docker tag pttg-enquiry-form-maintenance quay.io/ukhomeofficedigital/pttg-enquiry-form-maintenance:${DRONE_BRANCH}
+    - docker push quay.io/ukhomeofficedigital/pttg-enquiry-form-maintenance:${DRONE_BRANCH}
+    when:
+      branch:
+        exclude: master
+      event: push
+
+  install-docker-image-from-master-branch-build:
+    image: docker:18.03.1-ce
+    environment:
+    - DOCKER_HOST=tcp://172.17.0.1:2375
+    secrets:
+    - docker_password
+    commands:
+    - docker login -u="ukhomeofficedigital+pttg_enquiry_form_maintenance" -p=$${DOCKER_PASSWORD} quay.io
+    - docker tag pttg-enquiry-form-maintenance quay.io/ukhomeofficedigital/pttg-enquiry-form-maintenance:latest
+    - docker push quay.io/ukhomeofficedigital/pttg-enquiry-form-maintenance:latest
+    - docker tag pttg-enquiry-form-maintenance quay.io/ukhomeofficedigital/pttg-enquiry-form-maintenance:build-$${DRONE_BUILD_NUMBER}
+    - docker push quay.io/ukhomeofficedigital/pttg-enquiry-form-maintenance:build-$${DRONE_BUILD_NUMBER}
+    when:
+      branch: master
+      event: push
+
+  tag-docker-image-with-git-tag:
+    image: docker:18.03.1-ce
+    environment:
+    - DOCKER_HOST=tcp://172.17.0.1:2375
+    commands:
+    - docker login -u="ukhomeofficedigital+pttg_enquiry_form_maintenance" -p=$${DOCKER_PASSWORD} quay.io
+    - docker tag pttg-enquiry-form-maintenance quay.io/ukhomeofficedigital/pttg-enquiry-form-maintenance:$${DRONE_TAG}
+    - docker push quay.io/ukhomeofficedigital/pttg-enquiry-form-maintenance:$${DRONE_TAG}
+    - docker tag pttg-enquiry-form-maintenance quay.io/ukhomeofficedigital/pttg-enquiry-form-maintenance:${DRONE_COMMIT_SHA:0:8}
+    - docker push quay.io/ukhomeofficedigital/pttg-enquiry-form-maintenance:${DRONE_COMMIT_SHA:0:8}
+    when:
+      event: tag
