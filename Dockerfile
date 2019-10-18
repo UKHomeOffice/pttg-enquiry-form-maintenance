@@ -13,5 +13,5 @@ RUN apk update && apk add openssl
 RUN openssl dhparam -out /etc/nginx/dhparam.pem 2048
 
 # As certs from cfssl-sidekick belong to user '1000', we need to make nginx's UID '1000'
-RUN usermod -u 1000 nginx
+RUN /usr/sbin/usermod -u 1000 nginx
 USER 1000
