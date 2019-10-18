@@ -14,6 +14,7 @@ RUN openssl dhparam -out /etc/nginx/dhparam.pem 2048
 
 # As certs from cfssl-sidekick belong to user '1000', we need to make nginx's UID '1000'
 RUN /usr/sbin/usermod -u 1000 nginx
-USER 1000
+RUN chown 1000 /var/tmp/nginx
 
+USER 1000
 ENTRYPOINT ["/run.sh"]
