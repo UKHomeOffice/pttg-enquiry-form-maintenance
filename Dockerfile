@@ -4,5 +4,5 @@ WORKDIR /etc/nginx
 COPY nginx.conf .
 ENV NGINX_CONFIG_FILE=/etc/nginx/nginx.conf
 
-RUN mkdir html
-ADD ./html/ html
+RUN mkdir static
+ADD ./static/ static
