@@ -13,7 +13,7 @@ RUN yum install -y  yum-utils \
 RUN openssl dhparam -out /etc/nginx/dhparam.pem 2048
 
 RUN usermod -u 1000 nginx && \
-    chown -R nginx:nginx /etc/nginx /var/log/nginx
+    chown -R nginx:nginx /etc/nginx /var/log/nginx /var/cache/nginx/
 
 COPY bin/run.sh /run.sh
 COPY conf.d /etc/nginx/conf.d
