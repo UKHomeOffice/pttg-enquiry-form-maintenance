@@ -9,7 +9,7 @@ ADD ./static/ static
 
 # This takes a while so best to do it during build
 USER root
-RUN apk update && apk add openssl
+RUN apk update && apk add openssl shadow
 RUN openssl dhparam -out /etc/nginx/dhparam.pem 2048
 
 # As certs from cfssl-sidekick belong to user '1000', we need to make nginx's UID '1000'
