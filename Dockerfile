@@ -12,5 +12,4 @@ USER root
 RUN apk update && apk add openssl
 RUN openssl dhparam -out /etc/nginx/dhparam.pem 2048
 
-# 100 is nginx user
-USER 100
+USER 1000
