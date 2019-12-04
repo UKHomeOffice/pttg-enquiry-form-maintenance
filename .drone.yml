@@ -9,6 +9,17 @@ pipeline:
     when:
       event: [push, pull_request, tag]
 
+  scan:
+    image: quay.io/ukhomeofficedigital/anchore-submission:latest
+    dockerfile: Dockerfile
+    image_name: pttg-enquiry-form-maintenance
+    local_image: true
+    tolerate: medium
+    show_all_vulnerabilities: true
+    fail_on_detection: false # TODO EE-29064 Remove this when current vulnerabilities are resolved
+    when:
+      event: push
+
   install-docker-image-with-githash-tag:
     image: docker:18.03.1-ce
     environment:
